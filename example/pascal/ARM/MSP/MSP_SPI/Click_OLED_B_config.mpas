@@ -1,0 +1,8 @@
+unit Click_OLED_B_config;
+
+uses Click_OLED_B_types;
+
+const
+    _OLEDB_SPI_CFG : array[7] of uint32_t = (_SPI_MASTER, 64, _SPI_CLOCKSOURCE_SMCLK, _SPI_MSB_FIRST, _SPI_PHASE_DATA_CHANGE_FIRST_CAPTURE_NEXT, _SPI_CLK_IDLE_HIGH, _SPI_3PIN); 
+    
+end.

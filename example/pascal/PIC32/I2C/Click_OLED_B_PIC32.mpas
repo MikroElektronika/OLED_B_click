@@ -1,0 +1,97 @@
+{*
+Example for OLED B Click
+
+    Date          : mar 2018.
+    Author        : Dusan Poluga
+
+Test configuration PIC32 :
+    
+    MCU                : P32MX795F512L
+    Dev. Board         : EasyPIC Fusion v7
+    PIC32 Compiler ver : v4.0.0.0
+
+---
+Description :
+
+The application is composed of three sections :
+
+- System Initialization -  Initializes GPIO and I2C structures.
+- Application Initialization - Configures the micro controller for communication
+  and initializes the click board.
+- Application Task - This section contains the main program that is executed
+  showing a practiacal example on how to use the implemented functions.
+
+*}
+program Click_OLED_B_PIC32;
+
+uses Click_OLED_B_types, Click_OLED_B_config, resources;
+
+procedure systemInit(); 
+begin
+
+    mikrobus_gpioInit(_MIKROBUS1, _MIKROBUS_PWM_PIN, _GPIO_OUTPUT); 
+    mikrobus_gpioInit(_MIKROBUS1, _MIKROBUS_RST_PIN, _GPIO_OUTPUT); 
+    mikrobus_i2cInit(_MIKROBUS1, @_OLEDB_I2C_CFG[0]); 
+    Delay_ms(100); 
+
+end;
+
+procedure applicationInit(); 
+begin
+
+    oledb_i2cDriverInit(T_OLEDB_P(@_MIKROBUS1_GPIO), T_OLEDB_P(@_MIKROBUS1_I2C), 0); 
+    oledb_init(); 
+    Delay_ms(100); 
+
+end;
+
+procedure applicationTask(); 
+var
+    i : uint8_t;
+begin
+    i := 0x00;
+
+    oledb_displayPicture(@oledb[0]); 
+    Delay_ms(500); 
+    oledb_sendCommand(OLED_B_INVERTDISPLAY); 
+    Delay_ms(500); 
+    oledb_sendCommand(OLED_B_NORMALDISPLAY); 
+    Delay_ms(500); 
+    for i := 0xAF downto 0x00+1 do 
+    begin
+        oledb_setContrast(i); 
+        Delay_ms(10); 
+    end;
+    for i := 0x00 to 0xAF-1 do 
+    begin
+        oledb_setContrast(i); 
+        Delay_ms(10); 
+    end;
+    oledb_scrollRight(0x00, 0x05); 
+    Delay_ms(1000); 
+    oledb_stopScroll(); 
+    oledb_displayPicture(@oledb[0]); 
+    oledb_scrollLeft(0x00, 0x05); 
+    Delay_ms(1000); 
+    oledb_stopScroll(); 
+    oledb_displayPicture(@oledb[0]); 
+    oledb_scrollDiagright(0x00, 0x05); 
+    Delay_ms(1000); 
+    oledb_stopScroll(); 
+    oledb_displayPicture(@oledb[0]); 
+    oledb_scrollDiagleft(0x00, 0x05); 
+    Delay_ms(1000); 
+    oledb_stopScroll(); 
+
+end;
+
+begin
+
+    systemInit(); 
+    applicationInit(); 
+    while (1) do 
+    begin 
+        applicationTask(); 
+    end;
+
+end.

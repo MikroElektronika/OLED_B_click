@@ -1,0 +1,8 @@
+unit Click_OLED_B_config;
+
+uses Click_OLED_B_types;
+
+const
+    _OLEDB_I2C_CFG : array[2] of uint32_t = (_I2CM_SPEED_MODE_STANDARD, _I2CM_SWAP_DISABLE); 
+    
+end.
